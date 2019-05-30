@@ -83,14 +83,14 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="179" height="30"/>
                                                 <state key="normal" title="Insert Todo"/>
                                                 <connections>
-                                                    <action selector="inserTodoButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eQv-SO-9Ui"/>
+                                                    <action selector="inserTodoButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gBa-gU-x0X"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kvV-xO-6KK">
                                                 <rect key="frame" x="196" y="0.0" width="179" height="30"/>
                                                 <state key="normal" title="Update todo"/>
                                                 <connections>
-                                                    <action selector="updateTodoButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uLQ-dJ-Xih"/>
+                                                    <action selector="updateTodoButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QF4-1l-BHF"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -102,14 +102,14 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="182" height="30"/>
                                                 <state key="normal" title="Update Passport"/>
                                                 <connections>
-                                                    <action selector="updatePassportButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="n9p-QV-teC"/>
+                                                    <action selector="updatePassportButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="e6w-OW-Cm9"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GxG-zw-BRN">
                                                 <rect key="frame" x="193" y="0.0" width="182" height="30"/>
                                                 <state key="normal" title="Delete Todo"/>
                                                 <connections>
-                                                    <action selector="deletTodoButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bhM-Eu-6IN"/>
+                                                    <action selector="deletTodoButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xag-Wp-7VE"/>
                                                 </connections>
                                             </button>
                                         </subviews>

@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     var users: Results<User>?
     var notificationToken: NotificationToken?
+    var notificationTokenForPassport: NotificationToken?
+
     
     
     
@@ -22,27 +24,119 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         insertObjectIfNotExistsIntoTheRealm()
-        addObserver()
+        addObserverToTodos()
+        addObserverOnPassport()
     }
-    func addObserver() {
-        
-        notificationToken = users?.observe() { [unowned self] (changes) in
+    func insertRow(at index:Int) {
+        tableView.beginUpdates()
+        let indexPath = IndexPath(item: index, section: 0)
+        tableView.insertRows(at: [indexPath], with: .automatic)
+       tableView.endUpdates()
+    }
+    func deleteRow(at index:Int) {
+        tableView.beginUpdates()
+        let indexPath = IndexPath(item: index, section: 0)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.endUpdates()
+    }
+    func updateRow(at index:Int) {
+        let indexPath = IndexPath(item: index, section: 0)
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    func addObserverOnPassport() {
+        notificationTokenForPassport = users?[0].passport?.observe({ [unowned self] (change) in
+            switch change {
+                
+            case .error(_):
+                print("error")
+            case .change(let properties):
+                for property in properties {
+                    print(property.name)
+                    print(property.newValue)
+                    print(property.oldValue)
+                    self.tableView.reloadData()
+                }
+            case .deleted:
+                print("Object Deleted")
+            }
+        })
+    }
+    @IBAction func updatePassportButtonTapped(_ sender: Any) {
+        DispatchQueue.global(qos: .background).async {
+            let realm = try! Realm()
+            let users = realm.objects(User.self).filter("userId == 1")
+            
+            try! realm.write {
+                users[0].passport?.passportNumber = "Updated Passport"
+                
+            }
+        }
+    }
+    func addObserverToTodos() {
+        notificationToken = users?[0].todos.observe() { [unowned self] (changes) in
             switch changes {
             case .initial(let users):
                 print("Initial case \(users.count)")
                 self.tableView.reloadData()
             case .update(let users, let deletions, let insertions, let modifications):
                 print("update case \(users.count)")
-                print("deletions Indexes\(deletions)")
-                print("insertions Indexes\(insertions)")
-                print("modifications Indexes\(modifications)")
+                
+                if  insertions.count > 0 {
+                    self.insertRow(at: insertions[0])
+                    print("insertions Indexes\(insertions)")
+                }
+                if  deletions.count > 0 {
+                    self.deleteRow(at: deletions[0])
+                    print("deletions Indexes\(deletions)")
+                }
+                if  modifications.count > 0 {
+                    self.updateRow(at: modifications[0])
+                    print("modifications Indexes\(modifications)")
+                }
+                
                 self.tableView.reloadData()
             case .error(let error):
                 print(error.localizedDescription)
             }
         }
-        
     }
+    @IBAction func deletTodoButtonTapped(_ sender: Any) {
+        let realm = try! Realm()
+        let users = realm.objects(User.self).filter("userId == 1")
+        
+        try! realm.write {
+            realm.delete(users[0].todos[0])
+            
+        }
+    }
+    @IBAction func updateTodoButtonTapped(_ sender: Any) {
+        let realm = try! Realm()
+        let users = realm.objects(User.self).filter("userId == 1")
+        
+        try! realm.write {
+            users[0].todos[0].name = "Updated RxSwift"
+            
+        }
+    }
+//    func addObserver() {
+//
+//        notificationToken = users?.observe() { [unowned self] (changes) in
+//            switch changes {
+//            case .initial(let users):
+//                print("Initial case \(users.count)")
+//                self.tableView.reloadData()
+//            case .update(let users, let deletions, let insertions, let modifications):
+//                print("update case \(users.count)")
+//                print("deletions Indexes\(deletions)")
+//                print("insertions Indexes\(insertions)")
+//                print("modifications Indexes\(modifications)")
+//                self.tableView.reloadData()
+//            case .error(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
+//
+//    }
 
     func insertObjectIfNotExistsIntoTheRealm(){
         let realm = RealmProvider.default.realm
@@ -82,13 +176,10 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func updateTodoButtonTapped(_ sender: Any) {
-    }
+   
     
-    @IBAction func deletTodoButtonTapped(_ sender: Any) {
-    }
-    @IBAction func updatePassportButtonTapped(_ sender: Any) {
-    }
+   
+  
 }
 
 extension ViewController : UITableViewDelegate {
