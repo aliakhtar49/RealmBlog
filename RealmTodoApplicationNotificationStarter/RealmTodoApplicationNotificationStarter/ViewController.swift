@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     var users: Results<User>?
     var notificationToken: NotificationToken?
-    var notificationTokenForTodo: NotificationToken?
+    
     
     
    
