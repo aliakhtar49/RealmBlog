@@ -15,4 +15,6 @@ class Passport: Object {
     let ofUser = LinkingObjects(fromType: User.self,
                                 property: "passport")
     
+    
+    
 }
