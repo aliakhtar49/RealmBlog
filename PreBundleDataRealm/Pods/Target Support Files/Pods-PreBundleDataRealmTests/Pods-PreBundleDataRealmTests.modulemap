@@ -1,0 +1,6 @@
+framework module Pods_PreBundleDataRealmTests {
+  umbrella header "Pods-PreBundleDataRealmTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
