@@ -18,4 +18,7 @@ pod "RealmSwift"
     # Pods for testing
   end
 
+  target 'PreBundleExtension' do
+    inherit! :search_paths # Because else we get the "conflicting names" error
+  end
 end

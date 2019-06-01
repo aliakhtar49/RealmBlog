@@ -17,6 +17,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let fileURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.ali.test")?.appendingPathComponent("shared.realm")
+        let sharedConfig = Realm.Configuration(
+            fileURL: fileURL)
+        
+        try! FileManager.default.copyItem(
+            at: Bundle.main.url(forResource: "bundle", withExtension: "realm")!, to: sharedConfig.fileURL!)
+        print(sharedConfig.fileURL!)
+     
+        
+       
+    }
+    func openingWithWrongKey() {
         let key = "wrong"
         let encyptedConfig = Realm.Configuration(
             fileURL: inLibrarayFolder(fileName: "encypted.realm"),encryptionKey:key.sha512())
