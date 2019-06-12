@@ -17,6 +17,10 @@ class User: Object {
     @objc dynamic var passport: Passport?
     let todos = List<Todo>()
     
+    override static func primaryKey() -> String? {
+        return "userId"
+    }
+    
     convenience init(_ firstName: String, _ userId: Int) {
         self.init()
         self.firstName = firstName

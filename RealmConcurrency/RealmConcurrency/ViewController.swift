@@ -332,3 +332,138 @@ class ViewController: UIViewController {
 
 }
 
+
+
+protocol Manager {
+    func fetch<T: Object>(_ model: T.Type, predicate: NSPredicate?, sorted: Sorted?, completion: ((T) -> Void) )
+}
+
+
+public protocol Storable {
+}
+extension Object: Storable {
+}
+
+/*
+ Operations on context
+ */
+protocol StorageContext {
+    /*
+     Create a new object with default values
+     return an object that is conformed to the `Storable` protocol
+     */
+    func create<T: Storable>(_ model: T.Type, completion: @escaping ((T) -> Void)) throws
+    /*
+     Save an object that is conformed to the `Storable` protocol
+     */
+    func save(object: Storable) throws
+    /*
+     Update an object that is conformed to the `Storable` protocol
+     */
+    func update(block: @escaping () -> ()) throws
+    /*
+     Delete an object that is conformed to the `Storable` protocol
+     */
+    func delete(object: Storable) throws
+    /*
+     Delete all objects that are conformed to the `Storable` protocol
+     */
+    func deleteAll<T: Storable>(_ model: T.Type) throws
+    /*
+     Return a list of objects that are conformed to the `Storable` protocol
+     */
+    func fetch<T: Storable>(_ model: T.Type, predicate: NSPredicate?, sorted: Sorted?, completion: (([T]) -> ()))
+    
+
+}
+
+public struct Sorted {
+    var key: String
+    var ascending: Bool = true
+}
+
+
+class RealmStorageContext: StorageContext {
+ 
+     var realm: Realm?
+    
+    func create<T>(_ model: T.Type, completion: @escaping ((T) -> Void)) throws where T : Storable {
+        guard let realm = self.realm,let model = model as? Object.Type else {
+            throw NSError()
+        }
+        
+        try realm.write  {
+            let newObject = realm.create(model, value: [], update: false) as! T
+            completion(newObject)
+        }
+    }
+    
+    func save(object: Storable) throws {
+        guard let realm = self.realm,let object = object as? Object else {
+            throw NSError()
+        }
+        
+        try realm.write {
+            realm.add(object)
+        }
+    }
+    
+    func update(block: @escaping () -> ()) throws {
+        
+        guard let realm = self.realm else {
+            throw NSError()
+        }
+        
+        try realm.write {
+            block()
+        }
+    }
+    
+    func delete(object: Storable) throws {
+        guard let realm = self.realm ,let object = object as? Object else {
+            throw NSError()
+        }
+        
+        try realm.write {
+            realm.delete(object)
+        }
+    }
+    
+    func deleteAll<T>(_ model: T.Type) throws where T : Storable {
+        guard let realm = self.realm,let model = model as? Object.Type else {
+            throw NSError()
+        }
+        
+        try realm.write {
+            let objects = realm.objects(model)
+            
+            for object in objects {
+                realm.delete(object)
+            }
+        }
+    }
+    
+    func fetch<T>(_ model: T.Type, predicate: NSPredicate?, sorted: Sorted?, completion: (([T]) -> ())) where T : Storable {
+        
+        guard let realm = self.realm,let model = model as? Object.Type else {
+           return
+        }
+        
+        var objects = realm.objects(model)
+        
+        if let predicate = predicate {
+            objects = objects.filter(predicate)
+        }
+        
+        if let sorted = sorted {
+            objects = objects.sorted(byKeyPath: sorted.key, ascending: sorted.ascending)
+        }
+        
+        completion(objects.compactMap { $0 as? T })
+        
+    }
+    
+
+}
+
+
