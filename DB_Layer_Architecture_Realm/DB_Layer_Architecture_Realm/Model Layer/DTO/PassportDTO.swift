@@ -22,8 +22,14 @@ extension PassportDTO: MappableProtocol{
         model.passportNumber = passportNumber
         return model
     }
+    func mapToRealmObject() -> Passport {
+        let model = Passport()
+        model.passportNumber = passportNumber
+        return model
+    }
     
     static func mapFromPersistenceObject(_ object: Passport) -> PassportDTO {
         return PassportDTO(passportNumber: object.passportNumber)
     }
+    
 }

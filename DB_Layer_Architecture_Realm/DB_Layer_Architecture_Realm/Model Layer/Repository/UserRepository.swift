@@ -48,3 +48,41 @@ extension UserRepository: UserRepositoryProtocol {
 
 
 
+
+class PassportRepository {
+    
+    var dbManager : DataManager
+    
+    //MARK: - Init
+    required init(dbManager : DataManager) {
+        self.dbManager = dbManager
+    }
+    
+  
+    func savePassport(passport: PassportDTO) {
+        do { try self.dbManager.save(object: passport.mapToPersistenceObject()) }
+        catch { print(error.localizedDescription) }
+    }
+
+}
+
+class RealmDataBaseManager: DataBaseManager {
+    
+    //MARK: - Stored Properties
+    private let realm: Realm?
+    
+    init(_ realm: Realm? = try! Realm()) {
+        self.realm = realm
+    }
+   
+    func save(object: Storable) throws {
+        guard let realm = realm, let object = object as? Object else { throw RealmError.eitherRealmIsNilOrNotRealmSpecificModel }
+        try realm.write {
+            realm.add(object)
+        }
+}
+}
+protocol DataBaseManager {
+    func save(object: Storable) throws
+}
+

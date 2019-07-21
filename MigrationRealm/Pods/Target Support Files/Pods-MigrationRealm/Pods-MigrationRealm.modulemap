@@ -1,0 +1,6 @@
+framework module Pods_MigrationRealm {
+  umbrella header "Pods-MigrationRealm-umbrella.h"
+
+  export *
+  module * { export * }
+}
